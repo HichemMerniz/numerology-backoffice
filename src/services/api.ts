@@ -1,12 +1,71 @@
-import axios from "axios";
+import { API_BASE_URL } from '@/config/api';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
-
-export const getNumerologyData = async (name: string, dob: string) => {
-  try {
-    const response = await axios.post(`${API_URL}/numerology`, { name, dob });
-    return response.data;
-  } catch (error) {
-    console.error("Error fetching numerology data:", error);
+// Register User
+export const registerUser = async (email: string, password: string) => {
+  const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ email, password }),
+  });
+  
+  if (!response.ok) {
+    throw new Error('Registration failed');
   }
+  
+  return response.json();
+};
+
+// Login User
+export const loginUser = async (email: string, password: string) => {
+  const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ email, password }),
+  });
+  
+  if (!response.ok) {
+    throw new Error('Login failed');
+  }
+  
+  return response.json();
+};
+
+// Fetch Numerology Data
+export const getNumerologyData = async (token: string, name: string, dob: string) => {
+  const response = await fetch(`${API_BASE_URL}/api/numerology`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+    },
+    body: JSON.stringify({ name, dob }),
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch numerology data');
+  }
+
+  return response.json();
+};
+
+// Generate PDF Report
+export const generateNumerologyPDF = async (token: string, name: string, dob: string) => {
+  const response = await fetch(`${API_BASE_URL}/api/pdf/generate`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+    },
+    body: JSON.stringify({ name, dob }),
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to generate PDF');
+  }
+
+  return response.json();
 };
