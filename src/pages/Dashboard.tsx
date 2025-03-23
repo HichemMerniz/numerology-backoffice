@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -14,7 +14,6 @@ export default function Dashboard() {
   const [name, setName] = useState("");
   const [dob, setDob] = useState("");
   const [result, setResult] = useState<any>(null);
-  const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const auth = useContext(AuthContext);
   const { t } = useLanguage();
@@ -33,12 +32,10 @@ export default function Dashboard() {
     if (!auth?.token) return;
     try {
       setIsGenerating(true);
-      const data = await generateNumerologyPDF(auth.token, name, dob);
-      // Ensure the URL is absolute
-      const fullUrl = data.downloadUrl.startsWith('http') 
-        ? data.downloadUrl 
-        : `${API_BASE_URL}${data.downloadUrl}`;
-      setDownloadUrl(fullUrl);
+      const { previewUrl } = await generateNumerologyPDF(auth.token, name, dob);
+      
+      // Open the PDF in a new tab
+      window.open(previewUrl, '_blank');
     } catch (error) {
       console.error("Error generating PDF:", error);
     } finally {
@@ -118,27 +115,13 @@ export default function Dashboard() {
                     {isGenerating ? t('results.generating') : t('results.generateReport')}
                   </Button>
                 </div>
-
-                {downloadUrl && (
-                  <div className="mt-4 flex justify-end">
-                    <a
-                      href={downloadUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 text-primary hover:text-primary/80 underline"
-                    >
-                      <Download className="h-4 w-4" />
-                      {t('results.downloadReport')}
-                    </a>
-                  </div>
-                )}
               </div>
             </CardContent>
           </Card>
         )}
 
         {/* History Section */}
-        <NumerologyHistory />
+        <NumerologyHistory refreshTrigger={result} />
       </div>
     </DashboardLayout>
   );

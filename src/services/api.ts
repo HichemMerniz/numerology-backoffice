@@ -67,8 +67,24 @@ export const generateNumerologyPDF = async (token: string, name: string, dob: st
     throw new Error('Failed to generate PDF');
   }
 
-  return response.json();
+  const data = await response.json();
+  
+  if (!data.success || !data.file) {
+    throw new Error('Invalid response from PDF generation');
+  }
+
+  // Extract the filename from the full path
+  const filename = data.file.split('/').pop();
+  
+  // Create a preview URL using the file path
+  const previewUrl = `${API_BASE_URL}/reports/${filename}`;
+  
+  return {
+    previewUrl,
+    filename: filename || `numerology-report-${name.toLowerCase().replace(/\s+/g, '-')}.pdf`
+  };
 };
+
 
 // Fetch Numerology History
 export const getNumerologyHistory = async (token: string) => {

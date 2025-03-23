@@ -90,17 +90,9 @@ export function NumerologyHistory({ refreshTrigger }: NumerologyHistoryProps) {
     try {
       setGeneratingPDF(reading.id);
       const data = await generateNumerologyPDF(auth.token, reading.name, reading.dob);
-      const fullUrl = data.downloadUrl.startsWith('http') 
-        ? data.downloadUrl 
-        : `${API_BASE_URL}${data.downloadUrl}`;
       
-      // Create a temporary anchor to trigger download
-      const a = document.createElement('a');
-      a.href = fullUrl;
-      a.download = `${reading.name}-numerology.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
+      // Open the PDF in a new tab
+      window.open(data.previewUrl, '_blank');
       
       toast({
         title: t('history.pdfSuccess.title'),
