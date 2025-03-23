@@ -1,57 +1,25 @@
-import { useContext } from "react";
-import { AuthContext } from "@/context/AuthContext";
-import { useLanguage } from "@/context/LanguageContext";
-import { useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { LogOut } from "lucide-react";
-import { LanguageToggle } from "@/components/ui/LanguageToggle";
+import { ReactNode } from "react";
+import { Sidebar } from "./Sidebar";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
 
 interface DashboardLayoutProps {
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 export function DashboardLayout({ children }: DashboardLayoutProps) {
-  const auth = useContext(AuthContext);
-  const navigate = useNavigate();
-  const { t } = useLanguage();
-
-  const handleLogout = () => {
-    auth?.logout();
-    navigate("/login");
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-background">
-      {/* Header */}
-      <header className="sticky top-0 z-50 w-full border-b bg-background/50 backdrop-blur supports-[backdrop-filter]:bg-background/50">
-        <div className="container flex h-16 items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="text-xl font-bold">{t('app.title')}</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <LanguageToggle />
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={handleLogout}
-              className="h-9 w-9 rounded-full"
-            >
-              <LogOut className="h-4 w-4" />
-              <span className="sr-only">{t('app.logout')}</span>
-            </Button>
+    <div className="min-h-screen bg-background">
+      <Sidebar />
+      <div className="md:pl-64">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
+          <div className="py-4">
+            <div className="absolute right-4 top-4">
+              <ThemeToggle />
+            </div>
+            {children}
           </div>
         </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="container py-6 relative">
-        <div className="absolute inset-0 -z-10 overflow-hidden">
-          <div className="absolute left-[50%] top-[50%] -z-10 h-[600px] w-[600px] -translate-x-[50%] -translate-y-[50%] rounded-full bg-primary/5 blur-3xl" />
-          <div className="absolute right-[25%] top-[25%] -z-10 h-[300px] w-[300px] rounded-full bg-primary/10 blur-2xl" />
-          <div className="absolute left-[25%] bottom-[25%] -z-10 h-[400px] w-[400px] rounded-full bg-primary/15 blur-2xl" />
-        </div>
-        {children}
-      </main>
+      </div>
     </div>
   );
 } 

@@ -1,26 +1,66 @@
 import './styles/globals.css';
-import { Button } from './components/ui/button';
-import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
-import { AuthProvider, AuthContext } from "./context/AuthContext";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { AuthProvider } from "./context/AuthContext";
 import { LanguageProvider } from "./context/LanguageContext";
+import { ThemeProvider } from "./context/ThemeContext";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
+import { PrivateRoute } from "./components/auth/PrivateRoute";
+import { Toaster } from "@/components/ui/toaster";
 
-const App = () => {
+function App() {
   return (
-    <LanguageProvider>
-      <AuthProvider>
-        <Router>
-          <Routes>
-            <Route path="/" element={<Login />} />
-            <Route path="/dashboard" element={
-              <AuthContext.Consumer>{(auth) => auth?.isAuthenticated ? <Dashboard /> : <Navigate to="/" />}</AuthContext.Consumer>
-            } />
-          </Routes>
-        </Router>
-      </AuthProvider>
-    </LanguageProvider>
+    <Router>
+      <ThemeProvider>
+        <LanguageProvider>
+          <AuthProvider>
+            <Routes>
+              {/* Public routes */}
+              <Route path="/login" element={<Login />} />
+              
+              {/* Protected routes */}
+              <Route
+                path="/"
+                element={
+                  <PrivateRoute>
+                    <Dashboard />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/dashboard"
+                element={
+                  <PrivateRoute>
+                    <Dashboard />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/calculator"
+                element={
+                  <PrivateRoute>
+                    <Dashboard />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/settings"
+                element={
+                  <PrivateRoute>
+                    <Dashboard />
+                  </PrivateRoute>
+                }
+              />
+
+              {/* Catch all route */}
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+            <Toaster />
+          </AuthProvider>
+        </LanguageProvider>
+      </ThemeProvider>
+    </Router>
   );
-};
+}
 
 export default App;
