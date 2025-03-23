@@ -72,7 +72,7 @@ export const generateNumerologyPDF = async (token: string, name: string, dob: st
 
 // Fetch Numerology History
 export const getNumerologyHistory = async (token: string) => {
-  const response = await fetch(`${API_BASE_URL}/api/numerology/history`, {
+  const response = await fetch(`${API_BASE_URL}api/numerology/history`, {
     method: 'GET',
     headers: {
       'Authorization': `Bearer ${token}`,

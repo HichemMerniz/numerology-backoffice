@@ -1,10 +1,8 @@
 import { useContext } from "react";
 import { AuthContext } from "@/context/AuthContext";
-import { useLanguage } from "@/context/LanguageContext";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { LogOut } from "lucide-react";
-import { LanguageToggle } from "@/components/ui/LanguageToggle";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -13,7 +11,6 @@ interface DashboardLayoutProps {
 export function DashboardLayout({ children }: DashboardLayoutProps) {
   const auth = useContext(AuthContext);
   const navigate = useNavigate();
-  const { t } = useLanguage();
 
   const handleLogout = () => {
     auth?.logout();
@@ -26,20 +23,17 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       <header className="sticky top-0 z-50 w-full border-b bg-background/50 backdrop-blur supports-[backdrop-filter]:bg-background/50">
         <div className="container flex h-16 items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="text-xl font-bold">{t('app.title')}</span>
+            <span className="text-xl font-bold">Numerology Dashboard</span>
           </div>
-          <div className="flex items-center gap-2">
-            <LanguageToggle />
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={handleLogout}
-              className="h-9 w-9 rounded-full"
-            >
-              <LogOut className="h-4 w-4" />
-              <span className="sr-only">{t('app.logout')}</span>
-            </Button>
-          </div>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={handleLogout}
+            className="h-9 w-9 rounded-full"
+          >
+            <LogOut className="h-4 w-4" />
+            <span className="sr-only">Logout</span>
+          </Button>
         </div>
       </header>
 

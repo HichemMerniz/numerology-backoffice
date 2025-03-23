@@ -4,9 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { AuthContext } from "@/context/AuthContext";
-import { useLanguage } from "@/context/LanguageContext";
 import { getNumerologyData, generateNumerologyPDF } from "../services/api";
-import { NumerologyHistory } from "@/components/history/NumerologyHistory";
 import { Download } from "lucide-react";
 import { API_BASE_URL } from "@/config/api";
 
@@ -17,7 +15,6 @@ export default function Dashboard() {
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const auth = useContext(AuthContext);
-  const { t } = useLanguage();
 
   const fetchNumerology = async () => {
     if (!auth?.token) return;
@@ -52,9 +49,9 @@ export default function Dashboard() {
         {/* Numerology Calculator Form */}
         <Card className="backdrop-blur-sm bg-card/50">
           <CardHeader>
-            <CardTitle>{t('calculator.title')}</CardTitle>
+            <CardTitle>Numerology Calculator</CardTitle>
             <CardDescription>
-              {t('calculator.description')}
+              Enter a name and date of birth to calculate numerology values
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -62,7 +59,7 @@ export default function Dashboard() {
               <div className="grid gap-2">
                 <Input
                   type="text"
-                  placeholder={t('calculator.name')}
+                  placeholder="Full Name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   className="bg-background/50"
@@ -77,7 +74,7 @@ export default function Dashboard() {
                   onClick={fetchNumerology}
                   className="w-full"
                 >
-                  {t('calculator.button')}
+                  Calculate Numerology
                 </Button>
               </div>
             </div>
@@ -88,21 +85,21 @@ export default function Dashboard() {
         {result && (
           <Card className="backdrop-blur-sm bg-card/50">
             <CardHeader>
-              <CardTitle>{t('results.title')}</CardTitle>
+              <CardTitle>Numerology Results</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid gap-4">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="p-4 rounded-lg bg-primary/5">
-                    <h3 className="font-semibold mb-2">{t('results.lifePath')}</h3>
+                    <h3 className="font-semibold mb-2">Life Path Number</h3>
                     <p className="text-3xl font-bold">{result.lifePath}</p>
                   </div>
                   <div className="p-4 rounded-lg bg-primary/5">
-                    <h3 className="font-semibold mb-2">{t('results.expression')}</h3>
+                    <h3 className="font-semibold mb-2">Expression Number</h3>
                     <p className="text-3xl font-bold">{result.expression}</p>
                   </div>
                   <div className="p-4 rounded-lg bg-primary/5">
-                    <h3 className="font-semibold mb-2">{t('results.soulUrge')}</h3>
+                    <h3 className="font-semibold mb-2">Soul Urge Number</h3>
                     <p className="text-3xl font-bold">{result.soulUrge}</p>
                   </div>
                 </div>
@@ -115,7 +112,7 @@ export default function Dashboard() {
                     disabled={isGenerating}
                   >
                     <Download className="h-4 w-4" />
-                    {isGenerating ? t('results.generating') : t('results.generateReport')}
+                    {isGenerating ? "Generating..." : "Generate Report"}
                   </Button>
                 </div>
 
@@ -128,7 +125,7 @@ export default function Dashboard() {
                       className="inline-flex items-center gap-2 text-primary hover:text-primary/80 underline"
                     >
                       <Download className="h-4 w-4" />
-                      {t('results.downloadReport')}
+                      Download PDF Report
                     </a>
                   </div>
                 )}
@@ -136,9 +133,6 @@ export default function Dashboard() {
             </CardContent>
           </Card>
         )}
-
-        {/* History Section */}
-        <NumerologyHistory />
       </div>
     </DashboardLayout>
   );

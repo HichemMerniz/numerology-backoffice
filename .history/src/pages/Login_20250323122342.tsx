@@ -1,13 +1,11 @@
 import { useState, useContext } from "react";
 import { loginUser } from "../services/api";
 import { AuthContext } from "../context/AuthContext";
-import { useLanguage } from "@/context/LanguageContext";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Eye, EyeOff, Languages } from "lucide-react";
-import { LanguageToggle } from "@/components/ui/LanguageToggle";
+import { Eye, EyeOff } from "lucide-react";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -15,7 +13,6 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const auth = useContext(AuthContext);
   const navigate = useNavigate();
-  const { t } = useLanguage();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,64 +34,51 @@ const Login = () => {
         <div className="absolute left-[25%] bottom-[25%] -z-10 h-[400px] w-[400px] rounded-full bg-primary/15 blur-2xl" />
       </div>
 
-      <div className="absolute top-4 right-4">
-        <LanguageToggle />
-      </div>
-
       <Card className="max-w-md w-full mx-auto backdrop-blur-sm bg-card/50">
         <CardHeader className="space-y-2">
-          <CardTitle className="text-2xl font-bold text-center">{t('login.title')}</CardTitle>
+          <CardTitle className="text-2xl font-bold text-center">Welcome Back</CardTitle>
           <CardDescription className="text-center">
-            {t('login.subtitle')}
+            Enter your credentials to access your account
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleLogin} className="space-y-4">
             <div className="space-y-2">
-              <label className="text-sm font-medium" htmlFor="email">
-                {t('login.email')}
-              </label>
               <Input
-                id="email"
                 type="email"
-                placeholder="your@email.com"
+                placeholder="Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                required
                 className="bg-background/50"
+                required
               />
             </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium" htmlFor="password">
-                {t('login.password')}
-              </label>
-              <div className="relative">
-                <Input
-                  id="password"
-                  type={showPassword ? "text" : "password"}
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  className="bg-background/50"
-                />
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  className="absolute right-0 top-0 h-full px-3"
-                  onClick={() => setShowPassword(!showPassword)}
-                >
-                  {showPassword ? (
-                    <EyeOff className="h-4 w-4 text-muted-foreground" />
-                  ) : (
-                    <Eye className="h-4 w-4 text-muted-foreground" />
-                  )}
-                </Button>
-              </div>
+            <div className="space-y-2 relative">
+              <Input
+                type={showPassword ? "text" : "password"}
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="bg-background/50 pr-10"
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+              >
+                {showPassword ? (
+                  <EyeOff className="h-4 w-4" />
+                ) : (
+                  <Eye className="h-4 w-4" />
+                )}
+              </button>
             </div>
-            <Button type="submit" className="w-full">
-              {t('login.submit')}
+            <Button
+              type="submit"
+              className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
+            >
+              Sign In
             </Button>
           </form>
         </CardContent>

@@ -69,37 +69,3 @@ export const generateNumerologyPDF = async (token: string, name: string, dob: st
 
   return response.json();
 };
-
-// Fetch Numerology History
-export const getNumerologyHistory = async (token: string) => {
-  const response = await fetch(`${API_BASE_URL}/api/numerology/history`, {
-    method: 'GET',
-    headers: {
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error('Failed to fetch numerology history');
-  }
-
-  return response.json();
-};
-
-// Get History Entry Details
-export const getHistoryDetails = async (token: string, historyId: string) => {
-  const response = await fetch(`${API_BASE_URL}/api/numerology/history/${historyId}`, {
-    method: 'GET',
-    headers: {
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error('Failed to fetch history details');
-  }
-
-  return response.json();
-};
