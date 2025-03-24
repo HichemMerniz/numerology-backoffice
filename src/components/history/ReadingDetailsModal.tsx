@@ -1,5 +1,12 @@
 import { useLanguage } from "@/context/LanguageContext";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Download, X } from "lucide-react";
 import { format } from "date-fns";
@@ -10,6 +17,7 @@ type HistoryEntry = {
   name: string;
   dob: string;
   createdAt: string;
+  pdfUrl?: string;
   readings: {
     lifePath: { name: string; value: number };
     expression: { name: string; value: number };
@@ -21,10 +29,15 @@ type ReadingDetailsModalProps = {
   isOpen: boolean;
   onClose: () => void;
   reading: HistoryEntry | null;
-  onGeneratePDF: (reading: HistoryEntry) => void;
+  onGeneratePDF?: (reading: HistoryEntry) => void;
 };
 
-export function ReadingDetailsModal({ isOpen, onClose, reading, onGeneratePDF }: ReadingDetailsModalProps) {
+export function ReadingDetailsModal({
+  isOpen,
+  onClose,
+  reading,
+  onGeneratePDF,
+}: ReadingDetailsModalProps) {
   const { t } = useLanguage();
 
   if (!reading) return null;
@@ -67,19 +80,25 @@ export function ReadingDetailsModal({ isOpen, onClose, reading, onGeneratePDF }:
               <DialogHeader className="p-6 pb-0">
                 <DialogTitle className="flex justify-between items-center">
                   <span>{reading.name}</span>
-                  <Button variant="ghost" size="sm" onClick={onClose} className="h-8 w-8 p-0 rounded-full hover:bg-muted/80 transition-colors">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={onClose}
+                    className="h-8 w-8 p-0 rounded-full hover:bg-muted/80 transition-colors"
+                  >
                     <X className="h-4 w-4" />
                   </Button>
                 </DialogTitle>
                 <DialogDescription>
-                  {formatDate(reading.dob)} • {t('history.calculatedOn')} {formatDate(reading.createdAt)}
+                  {formatDate(reading.dob)} • {t("history.calculatedOn")}{" "}
+                  {formatDate(reading.createdAt)}
                 </DialogDescription>
               </DialogHeader>
-              
+
               <div className="p-6 pt-4">
                 <div className="grid grid-cols-1 gap-4">
                   {/* Life Path */}
-                  <motion.div 
+                  <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 0.1, duration: 0.3 }}
@@ -87,21 +106,28 @@ export function ReadingDetailsModal({ isOpen, onClose, reading, onGeneratePDF }:
                     style={{ background: "rgba(var(--primary), 0.03)" }}
                   >
                     <h3 className="font-medium text-sm text-muted-foreground mb-1">
-                      {t('results.lifePath')}
+                      {t("results.lifePath")}
                     </h3>
                     <div className="mt-2 flex items-end gap-3">
-                      <div className={`text-5xl font-bold bg-gradient-to-r ${getNumberColor(reading.readings.lifePath.value)} bg-clip-text text-transparent`}>
+                      <div
+                        className={`text-5xl font-bold bg-gradient-to-r ${getNumberColor(
+                          reading.readings.lifePath.value
+                        )} bg-clip-text text-transparent`}
+                      >
                         {reading.readings.lifePath.value}
                       </div>
                       <div className="text-sm text-muted-foreground leading-tight pb-1">
-                        {t(`numerology.lifePath.${reading.readings.lifePath.value}.brief`)}
+                        {t(
+                          `numerology.lifePath.${reading.readings.lifePath.value}.brief`,
+                          { fallback: "" }
+                        )}
                       </div>
                     </div>
                   </motion.div>
-                  
+
                   {/* Expression & Soul Urge */}
                   <div className="grid grid-cols-2 gap-4">
-                    <motion.div 
+                    <motion.div
                       initial={{ opacity: 0, scale: 0.9 }}
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ delay: 0.2, duration: 0.3 }}
@@ -109,14 +135,18 @@ export function ReadingDetailsModal({ isOpen, onClose, reading, onGeneratePDF }:
                       style={{ background: "rgba(var(--primary), 0.01)" }}
                     >
                       <h3 className="font-medium text-sm text-muted-foreground mb-1">
-                        {t('results.expression')}
+                        {t("results.expression")}
                       </h3>
-                      <div className={`text-4xl font-bold bg-gradient-to-r ${getNumberColor(reading.readings.expression.value)} bg-clip-text text-transparent`}>
+                      <div
+                        className={`text-4xl font-bold bg-gradient-to-r ${getNumberColor(
+                          reading.readings.expression.value
+                        )} bg-clip-text text-transparent`}
+                      >
                         {reading.readings.expression.value}
                       </div>
                     </motion.div>
-                    
-                    <motion.div 
+
+                    <motion.div
                       initial={{ opacity: 0, scale: 0.9 }}
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ delay: 0.3, duration: 0.3 }}
@@ -124,30 +154,37 @@ export function ReadingDetailsModal({ isOpen, onClose, reading, onGeneratePDF }:
                       style={{ background: "rgba(var(--primary), 0.01)" }}
                     >
                       <h3 className="font-medium text-sm text-muted-foreground mb-1">
-                        {t('results.soulUrge')}
+                        {t("results.soulUrge")}
                       </h3>
-                      <div className={`text-4xl font-bold bg-gradient-to-r ${getNumberColor(reading.readings.soulUrge.value)} bg-clip-text text-transparent`}>
+                      <div
+                        className={`text-4xl font-bold bg-gradient-to-r ${getNumberColor(
+                          reading.readings.soulUrge.value
+                        )} bg-clip-text text-transparent`}
+                      >
                         {reading.readings.soulUrge.value}
                       </div>
                     </motion.div>
                   </div>
                 </div>
               </div>
-              
-              <DialogFooter className="p-6 pt-0 bg-muted/10">
-                <Button
-                  onClick={() => onGeneratePDF(reading)}
-                  variant="outline"
-                  className="flex items-center gap-2 w-full sm:w-auto hover:bg-primary hover:text-primary-foreground transition-colors"
-                >
-                  <Download className="h-4 w-4" />
-                  {t('history.downloadPdf')}
-                </Button>
-              </DialogFooter>
+
+              {/* {onGeneratePDF && (
+                <DialogFooter className="p-6 pt-0 bg-muted/10">
+                  
+                  <Button
+                    onClick={() => onGeneratePDF(reading)}
+                    variant="outline"
+                    className="flex items-center gap-2 w-full sm:w-auto hover:bg-primary hover:text-primary-foreground transition-colors"
+                  >
+                    <Download className="h-4 w-4" />
+                    {t("history.downloadPdf")}
+                  </Button>
+                </DialogFooter>
+              )} */}
             </motion.div>
           </DialogContent>
         </Dialog>
       )}
     </AnimatePresence>
   );
-} 
+}

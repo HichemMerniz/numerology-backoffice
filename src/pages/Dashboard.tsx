@@ -1,6 +1,12 @@
 import { useState, useContext, useEffect } from "react";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { AuthContext } from "@/context/AuthContext";
@@ -31,7 +37,7 @@ export default function Dashboard() {
       });
       return;
     }
-    
+
     setIsLoading(true);
     try {
       const data = await getNumerologyData(auth.token, name, dob);
@@ -52,12 +58,19 @@ export default function Dashboard() {
     }
   };
 
-  const generatePDF = async () => {
+  const generatePDF = async (pdfUrl: string) => {
     if (!auth?.token) return;
     try {
+      console.log("pdfUrl", pdfUrl);
       setIsGenerating(true);
-      const { previewUrl } = await generateNumerologyPDF(auth.token, name, dob);
-      window.open(previewUrl, '_blank');
+      // const { downloadUrl } = await generateNumerologyPDF(
+      //   auth.token,
+      //   name,
+      //   dob,
+      //   result?.id
+      // );
+      // window.open(downloadUrl, "_blank");
+      window.open(API_BASE_URL + "/api/pdf/download" + pdfUrl+".pdf", '_blank');
       toast({
         title: "Success",
         description: "PDF generated successfully",
@@ -85,9 +98,11 @@ export default function Dashboard() {
         >
           <Card className="backdrop-blur-sm bg-card/50 border-primary/20 shadow-lg">
             <CardHeader>
-              <CardTitle className="text-2xl font-bold">{t('calculator.title')}</CardTitle>
+              <CardTitle className="text-2xl font-bold">
+                {t("calculator.title")}
+              </CardTitle>
               <CardDescription className="text-lg">
-                {t('calculator.description')}
+                {t("calculator.description")}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -95,7 +110,7 @@ export default function Dashboard() {
                 <div className="grid gap-4">
                   <div className="space-y-2">
                     <label className="text-sm font-medium" htmlFor="name">
-                      {t('calculator.name')}
+                      {t("calculator.name")}
                     </label>
                     <Input
                       id="name"
@@ -108,7 +123,7 @@ export default function Dashboard() {
                   </div>
                   <div className="space-y-2">
                     <label className="text-sm font-medium" htmlFor="dob">
-                      {t('calculator.dob')}
+                      {t("calculator.dob")}
                     </label>
                     <Input
                       id="dob"
@@ -129,7 +144,7 @@ export default function Dashboard() {
                         Calculating...
                       </>
                     ) : (
-                      t('calculator.button')
+                      t("calculator.button")
                     )}
                   </Button>
                 </div>
@@ -149,7 +164,9 @@ export default function Dashboard() {
             >
               <Card className="backdrop-blur-sm bg-card/50 border-primary/20 shadow-lg">
                 <CardHeader>
-                  <CardTitle className="text-2xl font-bold">{t('results.title')}</CardTitle>
+                  <CardTitle className="text-2xl font-bold">
+                    {t("results.title")}
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="grid gap-6">
@@ -158,28 +175,40 @@ export default function Dashboard() {
                         whileHover={{ scale: 1.05 }}
                         className="p-6 rounded-xl bg-primary/5 border border-primary/10 shadow-sm"
                       >
-                        <h3 className="font-semibold text-lg mb-3">{t('results.lifePath')}</h3>
-                        <p className="text-4xl font-bold text-primary">{result.lifePath}</p>
+                        <h3 className="font-semibold text-lg mb-3">
+                          {t("results.lifePath")}
+                        </h3>
+                        <p className="text-4xl font-bold text-primary">
+                          {result.lifePath}
+                        </p>
                       </motion.div>
                       <motion.div
                         whileHover={{ scale: 1.05 }}
                         className="p-6 rounded-xl bg-primary/5 border border-primary/10 shadow-sm"
                       >
-                        <h3 className="font-semibold text-lg mb-3">{t('results.expression')}</h3>
-                        <p className="text-4xl font-bold text-primary">{result.expression}</p>
+                        <h3 className="font-semibold text-lg mb-3">
+                          {t("results.expression")}
+                        </h3>
+                        <p className="text-4xl font-bold text-primary">
+                          {result.expression}
+                        </p>
                       </motion.div>
                       <motion.div
                         whileHover={{ scale: 1.05 }}
                         className="p-6 rounded-xl bg-primary/5 border border-primary/10 shadow-sm"
                       >
-                        <h3 className="font-semibold text-lg mb-3">{t('results.soulUrge')}</h3>
-                        <p className="text-4xl font-bold text-primary">{result.soulUrge}</p>
+                        <h3 className="font-semibold text-lg mb-3">
+                          {t("results.soulUrge")}
+                        </h3>
+                        <p className="text-4xl font-bold text-primary">
+                          {result.soulUrge}
+                        </p>
                       </motion.div>
                     </div>
-                    
+
                     <div className="flex justify-end mt-4">
                       <Button
-                        onClick={generatePDF}
+                        onClick={() => generatePDF(result?.pdfUrl)}
                         variant="outline"
                         className="flex items-center gap-2 h-12 text-lg"
                         disabled={isGenerating}
@@ -187,12 +216,12 @@ export default function Dashboard() {
                         {isGenerating ? (
                           <>
                             <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                            {t('results.generating')}
+                            {t("results.generating")}
                           </>
                         ) : (
                           <>
                             <Download className="h-5 w-5" />
-                            {t('results.generateReport')}
+                            {t("results.generateReport")}
                           </>
                         )}
                       </Button>
