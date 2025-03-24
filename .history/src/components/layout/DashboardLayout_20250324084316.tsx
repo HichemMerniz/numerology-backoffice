@@ -111,7 +111,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       </AnimatePresence>
 
       {/* Main Content */}
-      <div className="flex-grow lg:pl-2 w-full">
+      <div className="flex-grow lg:pl-6 w-full">
         <AnimatePresence mode="wait">
           {isLoading ? (
             <motion.div

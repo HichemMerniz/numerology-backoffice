@@ -14,7 +14,7 @@ export function Sidebar() {
 
   const navigation = [
     { name: t('nav.home'), href: "/", icon: Home },
-    // { name: t('nav.calculator'), href: "/calculator", icon: Calculator },
+    { name: t('nav.calculator'), href: "/calculator", icon: Calculator },
     { name: t('nav.settings'), href: "/settings", icon: Settings },
   ];
 
